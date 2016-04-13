@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Amer Wafai
+# 11.06.2012
+
+FILES=`find ../ -name "*.uncrustify"`
+
+for i in $FILES ; do \
+	ORIG=`echo $i|sed 's/\.[^\.]*$//'`; \
+	diff $i $ORIG > /dev/null;
+	if [ $? != 0 ] ; then \
+              mv $i $ORIG ; \
+        else \
+              rm $i ; \
+        fi \
+done
