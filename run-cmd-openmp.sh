@@ -6,7 +6,7 @@
 # usage: ./run.sh [num_molecule] [end_time] [temperature]
 #
 # Examples:
-# To run 1000 molecules until 2 simulation time at temperature 0.8: 
+# To run 1000 molecules until 2 simulation time at temperature 0.8:
 # ./run.sh 1000 2 0.8
 
 
@@ -43,6 +43,11 @@ if [ -n "$3" ]; then
     TEMPERATURE=$3
 fi
 
+## output filename
+OUTPUT_FILE=md-simulation.tgz
+if [ -n "$4" ]; then
+    OUTPUT_FILE=$4
+fi
 
 echo "Running the molecular dynamics experiment"
 
@@ -57,7 +62,7 @@ echo ./main -v -N $NUM -n 0.9 -T $TEMPERATURE --domain-type=cube --timestep-leng
 --simulation-equilibration-time=0.5 --gridgenerator-lattice-centering=primitive --n-per-subdomain=20 \
 --generator=dropOverBasin --generator-drop-radius=2 --ascii-output --povray-output
 
-OUTPUT_FILE=psp-output-$TEMPERATURE.tgz
+#OUTPUT_FILE=psp-output-$TEMPERATURE.tgz
 
 tar zcvf $OUTPUT_FILE psp-*
 
