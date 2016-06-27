@@ -31,8 +31,8 @@ tar zxvf $INPUT
 
 
 #Other image resolutions: 640 x 480 # 1024 x 768 # 1280 x 1024 # 1600 x 1200
-WIDTH=1024  
-HEIGHT=768 
+WIDTH=1024
+HEIGHT=768
 
 # each core runs 1 povray job
 NCORE=`cat /proc/cpuinfo | grep -i processor | wc -l`
