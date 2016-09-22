@@ -10,27 +10,32 @@
 # ./run-cmd.sh 4 1000 2
 
 cp -vf pov-template.inc src/psp-header.inc
-cd src/
 rm -f *.pov *.dat *.xyz
-#cp -vf ../pov-template.inc psp-header.inc
 
-CPU=4
-if [ -n "$1" ]; then
-    CPU=$1
-fi
+## Number of CPUs is automatically set via 'nproc'
+CPU=$(nproc)
 
 ## number of molecules
-NUM=10000
-if [ -n "$2" ]; then
-    NUM=$2
+NUM=1000
+if [ -n "$1" ]; then
+    NUM=$1
 fi
 
 ## how long it will run, i.e. the time step is 0.000 0.005 0.010 0.015 ... end time
 END="0.05"
-if [ -n "$3" ]; then
-    END=$3
+if [ -n "$2" ]; then
+    END=$2
 fi
 
+TEMPERATURE=0.85
+if [ -n "$3" ]; then
+    TEMPERATURE=$3
+fi
+
+OUTPUT_FILE=md-simulation.tgz
+if [ -n "$4" ]; then
+    OUTPUT_FILE=$4
+fi
 
 ## check if hostfile exists
 INCL_HOST=""
@@ -45,10 +50,13 @@ echo "host file =" $INCL_HOST
 echo "Running the molecular docking experiment"
 
 echo mpirun -np $CPU $INCL_HOST \
-./main -N $NUM -n 1 -T 0.85 --domain-type=cuboid --cutoff-radius=1 -m 1 \
+./main -N $NUM -n 1 -T $TEMPERATURE --domain-type=cuboid --cutoff-radius=1 -m 1 \
 --simulation-end-time=$END --molecule-container=BASICN2 --thermostat=velocity-scaling --ascii-output --povray-output
 
 mpirun -np $CPU $INCL_HOST \
-./main -N $NUM -n 1 -T 0.85 --domain-type=cuboid --cutoff-radius=1 -m 1 \
+./main -N $NUM -n 1 -T $TEMPERATURE --domain-type=cuboid --cutoff-radius=1 -m 1 \
 --simulation-end-time=$END --molecule-container=BASICN2 --thermostat=velocity-scaling --ascii-output --povray-output
 
+tar zcvf $OUTPUT_FILE psp-*
+
+mv $OUTPUT_FILE ..
