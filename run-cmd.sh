@@ -9,7 +9,16 @@
 # To run using 4 cores and 1000 molecules until 2 simulation time: 
 # ./run-cmd.sh 4 1000 2
 
-cp -vf pov-template.inc src/psp-header.inc
+BASEDIR=$(dirname $BASH_SOURCE)
+
+
+MYDIR=$(mktemp -d --tmpdir=.)
+
+cp -vf $BASEDIR/pov-template.inc $MYDIR/psp-header.inc
+
+cp $BASEDIR/src/main $MYDIR
+
+cd $MYDIR
 rm -f *.pov *.dat *.xyz
 
 ## Number of CPUs is automatically set via 'nproc'
