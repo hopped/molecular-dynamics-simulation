@@ -8,21 +8,21 @@
 # To run using 4 cores and 1000 molecules: ./run-cmd.sh 4 1000
 # To run using 4 cores and 1000 molecules until 2 simulation time: 
 # ./run-cmd.sh 4 1000 2
-
-BASEDIR=$(dirname $BASH_SOURCE)
+BASEDIR=/MD_v4_MPI
 
 
 MYDIR=$(mktemp -d --tmpdir=.)
-
 cp -vf $BASEDIR/pov-template.inc $MYDIR/psp-header.inc
 
 cp $BASEDIR/src/main $MYDIR
+cp $BASEDIR/hostfile.txt $MYDIR
 
 cd $MYDIR
 rm -f *.pov *.dat *.xyz
 
 ## Number of CPUs is automatically set via 'nproc'
 CPU=$(nproc)
+
 
 ## number of molecules
 NUM=1000
@@ -39,6 +39,12 @@ fi
 TEMPERATURE=0.85
 if [ -n "$3" ]; then
     TEMPERATURE=$3
+    re='^[0-9]+$'
+    if ! [[ $3 =~ $re ]]; then
+        echo "ok"
+    else
+        TEMPERATURE=$(echo $3 / 100 | bc -l)
+    fi
 fi
 
 OUTPUT_FILE=md-simulation.tgz
